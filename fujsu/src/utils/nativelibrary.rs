@@ -8,7 +8,6 @@ use std::{
     path::{Path, PathBuf},
 };
 use thiserror::Error;
-use crate::nativelibrary;
 
 /// possible library loading errors
 #[derive(Debug, Error)]
@@ -60,10 +59,22 @@ impl NativeLibrary {
             pd: PhantomData,
         })
     }
+
+    pub fn sym_raw(&self, name_str: &str) -> Result<*mut c_void, LibError> {
+        let display_string = name_str.to_string();
+
+        let name = std::ffi::CString::new(name_str).map_err(|_| LibError::FailedToCreateCString)?;
+        let ptr = unsafe { libc::dlsym(self.handle, name.as_ptr()) };
+        if ptr.is_null() {
+            return Err(LibError::FailedToGetFnPtr(display_string));
+        }
+
+        Ok(ptr)
+    }
 }
 
 pub fn load_lib_with_dlerror<P: AsRef<Path>>(path: P, rtld: c_int) -> NativeLibrary {
-    nativelibrary::load_lib(path, rtld).unwrap_or_else(|e| {
+    load_lib(path, rtld).unwrap_or_else(|e| {
         error!("Failed to load: {}", e.to_string());
 
         let dl_error = unsafe { libc::dlerror() };

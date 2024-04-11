@@ -16,6 +16,7 @@ android_logger = "0.13.3"
 thiserror = "1.0.40"
 toml = "0.8.12"
 dobby-rs = { git = "https://github.com/RinLovesYou/dobby-rs" }
+lazy_static = "1.4.0"
 
 [package.metadata.docs.rs]
 targets = [

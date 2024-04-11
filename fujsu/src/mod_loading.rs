@@ -1,6 +1,6 @@
 use libc::RTLD_LAZY;
 
-use crate::nativelibrary::{NativeLibrary, NativeMethod};
+use crate::utils::nativelibrary::{NativeLibrary, NativeMethod};
 
 pub static mut MODS: Vec<NativeLibrary> = Vec::new();
 
@@ -8,7 +8,7 @@ pub unsafe fn load_libs() {
     info!("Loading mod libraries...");
     for lib in crate::configuration::MOD_LIBS.iter() {
         info!("Loading: {}", lib);
-        let lib = crate::nativelibrary::load_lib_with_dlerror(lib, RTLD_LAZY);
+        let lib = crate::utils::nativelibrary::load_lib_with_dlerror(lib, RTLD_LAZY);
         MODS.push(lib);
     }
 }

@@ -1,6 +1,8 @@
-pub mod nativelibrary;
+pub mod utils;
 pub mod configuration;
 pub mod mod_loading;
+pub mod il2cpp;
+pub mod errors;
 
 use jni::{
     sys::{ jint, JNI_VERSION_1_6},
@@ -19,9 +21,9 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
     android_logger::init_once(
         android_logger::Config::default()
             .with_max_level(log::LevelFilter::Trace)
+            .with_tag("fujsu")
     );
 
-    // unnecessary for now
     let mut env: JNIEnv = vm.get_env().expect("Cannot get reference to the JNIEnv");
     vm.attach_current_thread()
         .expect("Unable to attach current thread to the JVM");
@@ -35,10 +37,17 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
 
 #[no_mangle]
 fn startup() {
+    info!("startup called");
+
+    // TODO: hook il2cpp and call stuff
+    il2cpp::hook::hook_init();
+
+    info!("il2cpp hooked");
+
     unsafe {
         mod_loading::load_libs();
         mod_loading::call_load();
     }
 
-    // TODO: hook il2cpp and call stuff
+    info!("mods loaded");
 }
