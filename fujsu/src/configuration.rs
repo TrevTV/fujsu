@@ -2,13 +2,28 @@ use std::ffi::CString;
 use jni::JNIEnv;
 use jni::objects::JObject;
 use ndk_sys::AAssetManager;
+use toml::Table;
+
+pub static mut MOD_LIBS: Vec<String> = Vec::new();
 
 pub fn init(env: &mut JNIEnv) {
     let config_str = unsafe {
         read_asset_to_string("fujsu.toml", env)
     };
 
-    info!("Config: {}", config_str);
+    let table: Table = toml::from_str(&config_str).unwrap();
+
+    
+    if table.contains_key("mods") {
+        for mod_name in table["mods"].as_array().unwrap() {
+            unsafe {
+                MOD_LIBS.push(mod_name.as_str().unwrap().to_string());
+            }
+        }
+    }
+    else {
+        warn!("No mods provided! Fujsu will do literally nothing.");
+    }
 }
 
 unsafe fn read_asset_to_string(filename: &str, env: &mut JNIEnv) -> String {

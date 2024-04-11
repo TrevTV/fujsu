@@ -64,6 +64,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "dobby-rs"
+version = "0.1.0"
+source = "git+https://github.com/RinLovesYou/dobby-rs#5af4e2c666aed8e4636b8df7467425a202589e54"
+dependencies = [
+ "dobby-sys",
+ "thiserror",
+]
+
+[[package]]
+name = "dobby-sys"
+version = "0.1.0"
+source = "git+https://github.com/RinLovesYou/dobby-sys.git#3001d5debc9a8b53fdbd7bf7224b16c584c26fbf"
+
+[[package]]
 name = "env_logger"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -84,12 +98,14 @@ name = "fujsu"
 version = "0.1.0"
 dependencies = [
  "android_logger",
+ "dobby-rs",
  "jni",
  "libc",
  "log",
  "ndk",
  "ndk-sys 0.5.0+25.2.9519653",
  "thiserror",
+ "toml",
 ]
 
 [[package]]
