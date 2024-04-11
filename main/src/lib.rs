@@ -16,7 +16,7 @@ const INVALID_JNI_VERSION: jint = 0;
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
-    android_log::init("libmain_rs").unwrap();
+    android_log::init("libmain").unwrap();
 
     let mut env: JNIEnv = vm.get_env().expect("Cannot get reference to the JNIEnv");
     vm.attach_current_thread()
