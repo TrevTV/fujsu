@@ -2,15 +2,13 @@
 // thanks rin :)
 
 use std::{
-    ffi::{
-        c_void,
-        c_int
-    },
+    ffi::{c_int, c_void, CStr},
     marker::PhantomData,
     ops::Deref,
     path::{Path, PathBuf},
 };
 use thiserror::Error;
+use crate::nativelibrary;
 
 /// possible library loading errors
 #[derive(Debug, Error)]
@@ -62,6 +60,18 @@ impl NativeLibrary {
             pd: PhantomData,
         })
     }
+}
+
+pub fn load_lib_with_dlerror<P: AsRef<Path>>(path: P, rtld: c_int) -> NativeLibrary {
+    nativelibrary::load_lib(path, rtld).unwrap_or_else(|e| {
+        error!("Failed to load: {}", e.to_string());
+
+        let dl_error = unsafe { libc::dlerror() };
+        let error_message = unsafe { CStr::from_ptr(dl_error) };
+        let formatted_string = error_message.to_string_lossy();
+        error!("dlerror: {}", formatted_string);
+        panic!();
+    })
 }
 
 pub fn load_lib<P: AsRef<Path>>(path: P, rtld: c_int) -> Result<NativeLibrary, LibError> {

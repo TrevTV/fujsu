@@ -17,7 +17,6 @@ fn load(env: JNIEnv, _: JClass, _: JString) -> jboolean {
 
 #[no_mangle]
 fn unload(_: JNIEnv, _: JClass) {
-    info!("unload");
 }
 
 fn load_custom(env: &JNIEnv) {
@@ -41,7 +40,7 @@ fn load_custom(env: &JNIEnv) {
             panic!();
         });
 
-    (on_load)(env.get_java_vm().expect("msg").get_java_vm_pointer(), std::ptr::null_mut());
+    (on_load)(env.get_java_vm().expect("Failed to get JavaVM from JNIEnv").get_java_vm_pointer(), std::ptr::null_mut());
 
     let initialize: nativelibrary::NativeMethod<fn()> = custom_lib
         .sym("startup")

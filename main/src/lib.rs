@@ -16,18 +16,23 @@ const INVALID_JNI_VERSION: jint = 0;
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
-    android_log::init("libmain").unwrap();
+    android_logger::init_once(
+        android_logger::Config::default()
+            .with_max_level(log::LevelFilter::Trace)
+    );
 
     let mut env: JNIEnv = vm.get_env().expect("Cannot get reference to the JNIEnv");
     vm.attach_current_thread()
         .expect("Unable to attach current thread to the JVM");
 
-    let self_lib = nativelibrary::load_lib(&PathBuf::from("libmain.so"), libc::RTLD_NOW | libc::RTLD_GLOBAL)
-        .expect("Failed to load self");
+    let self_lib = nativelibrary::load_lib(
+        &PathBuf::from("libmain.so"),
+        libc::RTLD_NOW | libc::RTLD_GLOBAL,
+    )
+    .expect("Failed to load self");
 
     let load_handle: nativelibrary::NativeMethod<fn(JNIEnv, JClass, JString) -> jboolean> =
-        self_lib.sym("load")
-        .expect("Failed to find load function");
+        self_lib.sym("load").expect("Failed to find load function");
 
     let unload_handle: nativelibrary::NativeMethod<fn(JNIEnv, JClass)> = self_lib
         .sym("unload")
@@ -51,6 +56,7 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
         .expect("Cannot find NativeLoader class");
     env.register_native_methods(nativeloader_class, NativeLoader_Methods)
         .expect("Failed to register native methods");
+
 
     catch_unwind(|| JNI_VERSION_1_6).unwrap_or(INVALID_JNI_VERSION)
 }
