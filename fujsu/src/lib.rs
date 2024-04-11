@@ -1,6 +1,7 @@
 pub mod nativelibrary;
 pub mod configuration;
-pub mod modloading;
+pub mod mod_loading;
+
 use jni::{
     sys::{ jint, JNI_VERSION_1_6},
     JavaVM, JNIEnv,
@@ -35,8 +36,8 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
 #[no_mangle]
 fn startup() {
     unsafe {
-        modloading::load_libs();
-        modloading::call_load();
+        mod_loading::load_libs();
+        mod_loading::call_load();
     }
 
     // TODO: hook il2cpp and call stuff
