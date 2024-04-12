@@ -37,9 +37,6 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
 
 #[no_mangle]
 fn startup() {
-    info!("startup called");
-
-    // TODO: hook il2cpp and call stuff
     il2cpp::hook::hook_init();
 
     info!("il2cpp hooked");
