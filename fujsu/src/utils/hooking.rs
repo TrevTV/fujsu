@@ -65,7 +65,7 @@ impl<T> Deref for NativeHook<T> {
     }
 }
 
-fn hook(target: usize, detour: usize) -> Result<usize, HookError> {
+pub fn hook(target: usize, detour: usize) -> Result<usize, HookError> {
     if target == 0 {
         return Err(HookError::Nullpointer("target".to_string()));
     }
@@ -91,7 +91,7 @@ fn hook(target: usize, detour: usize) -> Result<usize, HookError> {
     }
 }
 
-fn unhook(target: usize) -> Result<(), DynErr> {
+pub fn unhook(target: usize) -> Result<(), DynErr> {
     if target == 0 {
         return Err(HookError::Nullpointer("target".to_string()).into());
     }

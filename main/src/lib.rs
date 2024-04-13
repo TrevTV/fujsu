@@ -19,6 +19,7 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
     android_logger::init_once(
         android_logger::Config::default()
             .with_max_level(log::LevelFilter::Trace)
+            .with_tag("fujsu")
     );
 
     let mut env: JNIEnv = vm.get_env().expect("Cannot get reference to the JNIEnv");
