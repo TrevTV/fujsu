@@ -18,9 +18,6 @@ toml = "0.8.12"
 dobby-rs = { git = "https://github.com/RinLovesYou/dobby-rs" }
 lazy_static = "1.4.0"
 
-[build-dependencies]
-cbindgen = "0.26.0"
-
 [package.metadata.docs.rs]
 targets = [
     "aarch64-linux-android",
