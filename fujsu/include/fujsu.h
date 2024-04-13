@@ -1,4 +1,6 @@
 #pragma once
+#include <android/log.h>
+
 namespace fujsu {
     extern "C"
     {
@@ -8,8 +10,27 @@ namespace fujsu {
     void unhook(void *target);
 
     }
+
+    void info(const char *fmt, ...) {va_list args;
+        va_start(args, fmt);
+        __android_log_vprint(ANDROID_LOG_INFO, "fujsu", fmt, args);
+        va_end(args);
+    }
+
+    void warning(const char *fmt, ...) {va_list args;
+        va_start(args, fmt);
+        __android_log_vprint(ANDROID_LOG_WARN, "fujsu", fmt, args);
+        va_end(args);
+    }
+
+    void error(const char *fmt, ...) {va_list args;
+        va_start(args, fmt);
+        __android_log_vprint(ANDROID_LOG_ERROR, "fujsu", fmt, args);
+        va_end(args);
+    }
 }
 
+#ifndef NO_CORDL
 #define CREATE_HOOK(name_, mPtr, retval, ...)                                                                              \
     struct Hook_##name_                                                                                                    \
     {                                                                                                                      \
@@ -32,3 +53,4 @@ void InstallHook() {
     void *trampoline = fujsu::hook(addr, (void *) T::hook());
     (*(void **) T::trampoline()) = trampoline;
 }
+#endif
