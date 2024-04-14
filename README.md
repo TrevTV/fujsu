@@ -1,5 +1,5 @@
 # *fujsu*
-A minimal APK embedded native mod loader for Unity IL2CPP on Android.
+A minimal APK embedded native mod loader for Unity IL2CPP on Android (**ARM64 only**).
 
 ## Why?
 QuestLoader and/or scotland2 (I don't know the difference) was too fancy for my needs, so I figured I'd make my own very basic loader.
@@ -12,7 +12,14 @@ Fujsu does very little by itself. The project has two sections, `main` and `fujs
 `fujsu` is the actual mod loader. Simply put, it reads a configuration embedded into the APK which defines which libraries (mods) to load. From there it loads the mods, calls the `load()` function, hooks `il2cpp_init`, then once that is called, it calls every mod's `il2cpp_ready()` function.
 
 ## Installation
-Installation is meant to be mostly painless. Once compiled, put `libfujsu.so` and `libmain.so` inside the APK's ARM64 library folder (replacing the original `libmain.so`). Place any mods inside that directory as well. Then, create a `fujsu.toml` inside the `assets` folder. Inside of the config, you only need to define a list of mods.
+Installation is meant to be mostly painless.
+
+1. Once compiled, put `libfujsu.so` and `libmain.so` inside the APK's ARM64 library folder (replacing the original `libmain.so`).
+2. Download `libdobby.so` from [here](https://github.com/RinLovesYou/dobby-sys/blob/master/dobby_libraries/android/arm64/libdobby.so) and place it alongside the others.
+   - Dobby is required to hook `il2cpp_init`. 
+3. Place any mods inside that directory.
+4. Create a `fujsu.toml` inside the `assets` folder.
+5. Inside of the config, you only need to define a list of mods.
 
 ```toml
 mods = [
@@ -21,7 +28,9 @@ mods = [
 ]
 ```
 
-Then, recompile the APK and fujsu, and your mod, should automatically be loaded into the game.
+6. Recompile the APK
+
+Fujsu, and your mod(s), should automatically be loaded into the game.
 
 ## Mod Development
 Fujsu is intended to be used with [cordl](https://github.com/QuestPackageManager/cordl/) and [my fork of beatsaber-hook](https://github.com/TrevTV/beatsaber-hook), though neither are required. If you don't want to use either, but want the other functions from `fujsu.h`, add `add_compile_definitions(NO_CORDL)` to `CMakeLists.txt`. 
