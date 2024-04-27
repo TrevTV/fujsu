@@ -38,7 +38,7 @@ namespace fujsu {
     {                                                                                                                      \
         using funcType = retval (*)(__VA_ARGS__);                                                                          \
         constexpr static const char *name() { return #name_; }                                                             \
-        static const MethodInfo *getInfo() { return il2cpp_utils::il2cpp_type_check::MetadataGetter<mPtr>::get(); } \
+        static const MethodInfo *getInfo() { return il2cpp_utils::il2cpp_type_check::MetadataGetter<mPtr>::methodInfo(); } \
         static funcType *trampoline() { return &name_; }                                                                   \
         static inline retval (*name_)(__VA_ARGS__) = nullptr;                                                              \
         static funcType hook() { return &hook_##name_; }                                                                   \
